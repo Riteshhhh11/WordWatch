@@ -26,3 +26,9 @@ void VocabWidget::mousePressEvent(QMouseEvent *event){
     }
 }
 
+void VocabWidget::mouseMoveEvent(QMouseEvent *event){
+    if(event->buttons() & Qt::LeftButton){
+        move(event->globalPosition().toPoint() - dragPosition);
+        event->accept();
+    }
+}
