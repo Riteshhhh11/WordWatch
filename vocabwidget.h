@@ -2,6 +2,8 @@
 #define VOCABWIDGET_H
 
 #include <QWidget>
+#include <QMouseEvent>
+#include <QPoint>
 
 class VocabWidget : public QWidget
 {
@@ -10,5 +12,13 @@ class VocabWidget : public QWidget
 public:
     explicit VocabWidget(QWidget *parent = nullptr);
     ~VocabWidget() override;
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+private:
+    QPoint dragPosition;
 };
 #endif // VOCABWIDGET_H
