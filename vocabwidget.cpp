@@ -5,7 +5,7 @@ VocabWidget::VocabWidget(QWidget *parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
-    resize(300,150);
+    resize(300,300);
 }
 
 VocabWidget::~VocabWidget() = default;
@@ -13,9 +13,9 @@ VocabWidget::~VocabWidget() = default;
 void VocabWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QColor(0,0,0,150));
+    painter.setBrush(QColor(0,10,10,200));
     painter.setPen(Qt::NoPen);
-    painter.drawRoundedRect(rect(),15,15);
+    painter.drawRoundedRect(rect(),20,20);
 }
 
 void VocabWidget::mousePressEvent(QMouseEvent *event){
