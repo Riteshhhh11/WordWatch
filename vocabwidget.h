@@ -6,6 +6,7 @@
 #include <QPoint>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QTimer>
 
 class VocabWidget : public QWidget
 {
@@ -24,5 +25,6 @@ private:
     QPoint dragPosition;
     QLabel  *wordLabel;
     QLabel *definitonLabel;
+    QTimer *timer;
 };
 #endif // VOCABWIDGET_H

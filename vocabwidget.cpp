@@ -19,6 +19,10 @@ VocabWidget::VocabWidget(QWidget *parent)
     layout -> addWidget(wordLabel);
     layout -> addWidget(definitonLabel);
 
+    timer = new QTimer(this);
+    timer -> setInterval(5000);
+    timer -> start();
+
 }
 
 VocabWidget::~VocabWidget() = default;
