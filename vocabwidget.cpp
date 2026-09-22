@@ -6,6 +6,19 @@ VocabWidget::VocabWidget(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     resize(300,300);
+    QVBoxLayout *layout = new QVBoxLayout;
+    wordLabel = new QLabel("Serendipity", this);
+    wordLabel -> setStyleSheet("color: white; font-size: 24px; font-weight: bold; background: transparent;");
+    wordLabel -> setAlignment(Qt::AlignCenter);
+
+    definitonLabel = new QLabel("HEHEHEHEHEHEH", this);
+    definitonLabel -> setStyleSheet("color: #DDDDDD; font-size: 14px; background: transparent;");
+    definitonLabel -> setAlignment(Qt::AlignCenter);
+    definitonLabel -> setWordWrap(true);
+
+    layout -> addWidget(wordLabel);
+    layout -> addWidget(definitonLabel);
+
 }
 
 VocabWidget::~VocabWidget() = default;

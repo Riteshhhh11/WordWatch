@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QLabel>
+#include <QVBoxLayout>
 
 class VocabWidget : public QWidget
 {
@@ -20,5 +22,7 @@ protected:
 
 private:
     QPoint dragPosition;
+    QLabel  *wordLabel;
+    QLabel *definitonLabel;
 };
 #endif // VOCABWIDGET_H
