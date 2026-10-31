@@ -22,6 +22,7 @@ VocabWidget::VocabWidget(QWidget *parent)
     timer = new QTimer(this);
     timer -> setInterval(5000);
     timer -> start();
+    QObject::connect(timer, &QTimer::timeout, this, &VocabWidget::fetchNewWord);
 
 }
 
@@ -48,4 +49,8 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
         move(event->globalPosition().toPoint() - dragPosition);
         event->accept();
     }
+}
+
+void VocabWidget::fetchNewWord(){
+    wordLabel -> setText("Sexy Neetu");
 }
