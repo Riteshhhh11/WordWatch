@@ -7,6 +7,10 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include "QUrl"
+
 
 class VocabWidget : public QWidget
 {
@@ -22,11 +26,13 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 private slots:
     void fetchNewWord();
+    void onWordFetched(QNetworkReply *reply);
 
 private:
     QPoint dragPosition;
     QLabel  *wordLabel;
     QLabel *definitonLabel;
     QTimer *timer;
+    QNetworkAccessManager *networkManager;
 };
 #endif // VOCABWIDGET_H

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(WordWatch LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Network)
 
 qt_standard_project_setup()
 
@@ -16,6 +16,7 @@ target_link_libraries(WordWatch
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::Network
 )
 
 install(TARGETS WordWatch

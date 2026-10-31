@@ -1,17 +1,20 @@
 #include "vocabwidget.h"
 #include <QPainter>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QDebug>
 VocabWidget::VocabWidget(QWidget *parent)
     : QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     resize(300,300);
-    QVBoxLayout *layout = new QVBoxLayout;
-    wordLabel = new QLabel("Serendipity", this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    wordLabel = new QLabel(this);
     wordLabel -> setStyleSheet("color: white; font-size: 24px; font-weight: bold; background: transparent;");
-    wordLabel -> setAlignment(Qt::AlignCenter);
+    wordLabel -> setAlignment(Qt::AlignBottom);
 
-    definitonLabel = new QLabel("HEHEHEHEHEHEH", this);
+    definitonLabel = new QLabel(this);
     definitonLabel -> setStyleSheet("color: #DDDDDD; font-size: 14px; background: transparent;");
     definitonLabel -> setAlignment(Qt::AlignCenter);
     definitonLabel -> setWordWrap(true);
@@ -23,6 +26,10 @@ VocabWidget::VocabWidget(QWidget *parent)
     timer -> setInterval(5000);
     timer -> start();
     QObject::connect(timer, &QTimer::timeout, this, &VocabWidget::fetchNewWord);
+
+    networkManager = new QNetworkAccessManager(this);
+    QObject::connect(networkManager, &QNetworkAccessManager::finished, this, &VocabWidget::onWordFetched);
+
 
 }
 
@@ -50,7 +57,16 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
         event->accept();
     }
 }
-
 void VocabWidget::fetchNewWord(){
-    wordLabel -> setText("Sexy Neetu");
+    QNetworkRequest request (QUrl("https://random-word-api.herokuapp.com/word"));
+    networkManager -> get(request);
+}
+void VocabWidget::onWordFetched(QNetworkReply *reply){
+    QByteArray bytes = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(bytes);
+    QString newWord = doc.array()[0].toString();
+    qDebug()<<newWord;
+    wordLabel->setText(newWord);
+    qDebug()<< "Network Reply Error State:" << reply->error();
+    reply->deleteLater();
 }
