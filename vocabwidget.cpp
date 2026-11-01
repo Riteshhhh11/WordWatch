@@ -13,6 +13,12 @@ VocabWidget::VocabWidget(QWidget *parent)
     resize(350,250);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    titleLabel = new QLabel(this);
+    titleLabel -> setStyleSheet("color: #FFFFFF; font-family: 'Segoe UI'; font-size: 10px; font-weight: bold; background: transparent;");
+    titleLabel -> setAlignment(Qt::AlignTop);
+    titleLabel -> setText("Word Watch:- Vocab builder");
+    titleLabel -> setGeometry(20,10,310,20);
+
     wordLabel = new QLabel(this);
     wordLabel -> setStyleSheet("color: #FFFFFF; font-family: 'Segoe UI'; font-size: 26px; font-weight: bold; background: transparent;");
     wordLabel -> setAlignment(Qt::AlignCenter);
@@ -66,7 +72,7 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
     }
 }
 void VocabWidget::fetchNewWord(){
-    QString wordUrl = "https://random-word-api.herokuapp.com/word";
+    QString wordUrl = "https://random-word-api.herokuapp.com/word?diff=1";
     QNetworkRequest wordRequest (wordUrl);
     wordManager -> get(wordRequest);
 }
@@ -74,14 +80,10 @@ void VocabWidget::fetchNewWord(){
 void VocabWidget::onWordFetched(QNetworkReply *reply){
     QByteArray bytes = reply->readAll();
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
-    QString newWord = doc.array()[0].toString();
-    qDebug()<<newWord;
-    wordLabel->setText(newWord);
-
-    QString dictUrl= "https://api.dictionaryapi.dev/api/v2/entries/en/" + newWord;
+    pendingWord = doc.array()[0].toString();
+    QString dictUrl= "https://api.dictionaryapi.dev/api/v2/entries/en/" + pendingWord;
     QNetworkRequest definitionRequest(dictUrl);
     dictManager->get(definitionRequest);
-
     qDebug()<< "Network Reply Error State:" << reply->error();
     reply->deleteLater();    
 }
@@ -92,6 +94,7 @@ void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
     QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if(!doc.isArray()){
         definitonLabel->setText("Definition Not Found");
+        fetchNewWord();
         return;
     }
 
@@ -99,5 +102,6 @@ void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
                              .toObject()["definitions"].toArray()[0]
                              .toObject()["definition"].toString();
 
+    wordLabel->setText(pendingWord);
     definitonLabel->setText(definition.isEmpty()?"Definition Not Found" : definition);
 }

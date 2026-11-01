@@ -31,9 +31,11 @@ private slots:
 
 private:
     QPoint dragPosition;
-    QLabel  *wordLabel;
+    QLabel *wordLabel;
+    QLabel *titleLabel;
     QLabel *definitonLabel;
     QTimer *timer;
+    QString pendingWord;
     QNetworkAccessManager *wordManager;
     QNetworkAccessManager *dictManager;
 };
