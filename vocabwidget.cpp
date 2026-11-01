@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QDebug>
 VocabWidget::VocabWidget(QWidget *parent)
     : QWidget(parent)
@@ -63,6 +64,7 @@ void VocabWidget::fetchNewWord(){
     QNetworkRequest wordRequest (QUrl("https://random-word-api.herokuapp.com/word"));
     wordManager -> get(wordRequest);
 }
+
 void VocabWidget::onWordFetched(QNetworkReply *reply){
     QByteArray bytes = reply->readAll();
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
@@ -79,6 +81,21 @@ void VocabWidget::onWordFetched(QNetworkReply *reply){
 }
 
 void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
-    qDebug() << "Dictionary Raw Data: " << reply->readAll();
+    QByteArray bytes = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(bytes);
+    if(!doc.isArray()){
+        definitonLabel->setText("Definiton Not Found");
+        reply->deleteLater();
+        return;
+    }
+    QJsonObject rootObject = doc.array()[0].toObject();
+    QJsonArray definitionArray = rootObject["meanings"].toArray();
+    QJsonObject firstMeaning = definitionArray[0].toObject();
+
+    QJsonArray meaningArray = firstMeaning["definitions"].toArray();
+    QJsonObject firstDefinitionObject = meaningArray[0].toObject();
+    QString finalDefinition = firstDefinitionObject["definition"].toString();
+    definitonLabel->setText(finalDefinition);
+    qDebug() << "Dictionary Raw Data: " << bytes;
     reply->deleteLater();
 }
