@@ -81,21 +81,17 @@ void VocabWidget::onWordFetched(QNetworkReply *reply){
 }
 
 void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
-    QByteArray bytes = reply->readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(bytes);
+    reply->deleteLater();
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if(!doc.isArray()){
-        definitonLabel->setText("Definiton Not Found");
-        reply->deleteLater();
+        definitonLabel->setText("Definition Not Found");
         return;
     }
-    QJsonObject rootObject = doc.array()[0].toObject();
-    QJsonArray definitionArray = rootObject["meanings"].toArray();
-    QJsonObject firstMeaning = definitionArray[0].toObject();
 
-    QJsonArray meaningArray = firstMeaning["definitions"].toArray();
-    QJsonObject firstDefinitionObject = meaningArray[0].toObject();
-    QString finalDefinition = firstDefinitionObject["definition"].toString();
-    definitonLabel->setText(finalDefinition);
-    qDebug() << "Dictionary Raw Data: " << bytes;
-    reply->deleteLater();
+    QString definition = doc.array()[0].toObject()["meanings"].toArray()[0]
+                             .toObject()["definitions"].toArray()[0]
+                             .toObject()["definition"].toString();
+
+    definitonLabel->setText(definition.isEmpty()?"Definition Not Found" : definition);
 }
