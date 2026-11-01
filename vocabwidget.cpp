@@ -27,9 +27,11 @@ VocabWidget::VocabWidget(QWidget *parent)
     timer -> start();
     QObject::connect(timer, &QTimer::timeout, this, &VocabWidget::fetchNewWord);
 
-    networkManager = new QNetworkAccessManager(this);
-    QObject::connect(networkManager, &QNetworkAccessManager::finished, this, &VocabWidget::onWordFetched);
+    wordManager = new QNetworkAccessManager(this);
+    QObject::connect(wordManager, &QNetworkAccessManager::finished, this, &VocabWidget::onWordFetched);
 
+    dictManager = new QNetworkAccessManager(this);
+    QObject::connect(dictManager, &QNetworkAccessManager::finished, this, &VocabWidget::onDefinitionFetched);
 
 }
 
@@ -58,8 +60,8 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
     }
 }
 void VocabWidget::fetchNewWord(){
-    QNetworkRequest request (QUrl("https://random-word-api.herokuapp.com/word"));
-    networkManager -> get(request);
+    QNetworkRequest wordRequest (QUrl("https://random-word-api.herokuapp.com/word"));
+    wordManager -> get(wordRequest);
 }
 void VocabWidget::onWordFetched(QNetworkReply *reply){
     QByteArray bytes = reply->readAll();
@@ -67,6 +69,16 @@ void VocabWidget::onWordFetched(QNetworkReply *reply){
     QString newWord = doc.array()[0].toString();
     qDebug()<<newWord;
     wordLabel->setText(newWord);
+
+    QString dictUrl= "https://api.dictionaryapi.dev/api/v2/entries/en/" + newWord;
+    QNetworkRequest definitionRequest(dictUrl);
+    dictManager->get(definitionRequest);
+
     qDebug()<< "Network Reply Error State:" << reply->error();
+    reply->deleteLater();    
+}
+
+void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
+    qDebug() << "Dictionary Raw Data: " << reply->readAll();
     reply->deleteLater();
 }

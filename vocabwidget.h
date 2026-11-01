@@ -27,12 +27,14 @@ protected:
 private slots:
     void fetchNewWord();
     void onWordFetched(QNetworkReply *reply);
+    void onDefinitionFetched(QNetworkReply *reply);
 
 private:
     QPoint dragPosition;
     QLabel  *wordLabel;
     QLabel *definitonLabel;
     QTimer *timer;
-    QNetworkAccessManager *networkManager;
+    QNetworkAccessManager *wordManager;
+    QNetworkAccessManager *dictManager;
 };
 #endif // VOCABWIDGET_H
