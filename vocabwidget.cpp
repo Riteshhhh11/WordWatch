@@ -72,7 +72,7 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
     }
 }
 void VocabWidget::fetchNewWord(){
-    QString wordUrl = "https://random-word-api.herokuapp.com/word?diff=1";
+    QString wordUrl = "https://random-word-api.herokuapp.com/word?diff=3";
     QNetworkRequest wordRequest (wordUrl);
     wordManager -> get(wordRequest);
 }
@@ -84,7 +84,6 @@ void VocabWidget::onWordFetched(QNetworkReply *reply){
     QString dictUrl= "https://api.dictionaryapi.dev/api/v2/entries/en/" + pendingWord;
     QNetworkRequest definitionRequest(dictUrl);
     dictManager->get(definitionRequest);
-    qDebug()<< "Network Reply Error State:" << reply->error();
     reply->deleteLater();    
 }
 
@@ -97,11 +96,9 @@ void VocabWidget::onDefinitionFetched(QNetworkReply *reply){
         fetchNewWord();
         return;
     }
-
     QString definition = doc.array()[0].toObject()["meanings"].toArray()[0]
                              .toObject()["definitions"].toArray()[0]
                              .toObject()["definition"].toString();
-
     wordLabel->setText(pendingWord);
     definitonLabel->setText(definition.isEmpty()?"Definition Not Found" : definition);
 }
