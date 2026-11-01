@@ -4,27 +4,32 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDebug>
+
 VocabWidget::VocabWidget(QWidget *parent)
     : QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
-    resize(300,300);
+    resize(350,250);
+
     QVBoxLayout *layout = new QVBoxLayout(this);
     wordLabel = new QLabel(this);
-    wordLabel -> setStyleSheet("color: white; font-size: 24px; font-weight: bold; background: transparent;");
-    wordLabel -> setAlignment(Qt::AlignBottom);
+    wordLabel -> setStyleSheet("color: #FFFFFF; font-family: 'Segoe UI'; font-size: 26px; font-weight: bold; background: transparent;");
+    wordLabel -> setAlignment(Qt::AlignCenter);
 
     definitonLabel = new QLabel(this);
-    definitonLabel -> setStyleSheet("color: #DDDDDD; font-size: 14px; background: transparent;");
+    definitonLabel -> setStyleSheet("color: #B0B0B0; font-family: 'Segoe UI'; font-size: 15px;font-weight: bold; background: transparent;");
     definitonLabel -> setAlignment(Qt::AlignCenter);
     definitonLabel -> setWordWrap(true);
 
     layout -> addWidget(wordLabel);
     layout -> addWidget(definitonLabel);
+    layout -> setAlignment(Qt::AlignCenter);
+    layout -> setContentsMargins(20,20,20,20);
+    layout -> setSpacing(8);
 
     timer = new QTimer(this);
-    timer -> setInterval(5000);
+    timer -> setInterval(10000);
     timer -> start();
     QObject::connect(timer, &QTimer::timeout, this, &VocabWidget::fetchNewWord);
 
@@ -61,7 +66,8 @@ void VocabWidget::mouseMoveEvent(QMouseEvent *event){
     }
 }
 void VocabWidget::fetchNewWord(){
-    QNetworkRequest wordRequest (QUrl("https://random-word-api.herokuapp.com/word"));
+    QString wordUrl = "https://random-word-api.herokuapp.com/word";
+    QNetworkRequest wordRequest (wordUrl);
     wordManager -> get(wordRequest);
 }
 
